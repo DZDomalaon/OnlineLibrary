@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+	<h2 class="d-flex justify-content-center">Update Profile</h2>
+    <div class="d-flex justify-content-center">  
+        <form method="post">
+            {% csrf_token %}
+            {% if user.id == page_user.id %}                  
+                {% for field in form %}
+                    <div class="row align-items-center mb-2 mt-2">
+                        <div class="col">    
+                            {{ field.label_tag }}					
+                            {{ field.errors }}
+                        </div>
+                        <div class="col">
+                            {{ field }}
+                        </div>
+                    </div>
+                {% endfor %}
+                <br>
+                <div class="text-center">
+                    <button class="btn btn-primary" type="submit">Update Details</button>     
+                </div>	 
+            {% else %}
+                You are not allowed to edit this profile
+            {% endif %}		                            
+        </form>           
+	</div> 
+	<br>          	
+</div>
+{% endblock %}
