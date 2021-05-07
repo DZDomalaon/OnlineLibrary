@@ -3,6 +3,7 @@ from .forms import LoginForm, RegisterForm, EditForm
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import CustomUser
+from books.models import Books
 from .forms import LoginForm
 from django.shortcuts import render
 
@@ -39,26 +40,26 @@ class LogoutView(TemplateView):
 class HomePageView(TemplateView): 
         
     def get(self, request):
-        #data = Articles.objects.all()
+        books = Books.objects.all().order_by('-date_created')
         if request.user.is_authenticated:        
-            return render(request,'users/homepage.html')
+            return render(request,'users/homepage.html', {'books': books})
         else:            
             form = LoginForm()
-            return render(request, "users/login.html", {"form":form})
+            return render(request, "users/login.html", {"form": form})
 
 
 class ShowProfileView(TemplateView):
     
-    template_name = 'users/userprofile.html'
+    template_name = 'users/owned_books.html'
 
     def get_context_data(self, *args, **kwargs):
 
-        #post_data = Articles.objects.filter(owner=self.request.user).order_by('-date_created')
+        owned_books = Books.objects.filter(owner=self.request.user).order_by('-date_created')        
         context = super(ShowProfileView,self).get_context_data(*args, **kwargs)
         
         page_user = get_object_or_404(CustomUser, id=self.kwargs['pk'])    
         context = {
-                #'post_data': post_data,
+                'owned_books': owned_books,
                 'page_user': page_user,
             }
 
