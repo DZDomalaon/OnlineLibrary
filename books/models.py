@@ -6,18 +6,14 @@ from users.models import CustomUser
 # Create your models here.
 class Books(models.Model):
 
-    STATUS_CHOICES = (
-        ('av', 'Available'),
-        ('co', 'Checked Out'),        
-    )
-
     title = models.CharField(max_length=250)
     author = models.CharField(max_length=250)
     location = models.CharField(max_length=250, blank=True, null=True)
-    book_image = models.ImageField(blank=True, null=True, upload_to='media/')
+    book_image = models.ImageField(blank=True, null=True, upload_to='books/')
     is_digital = models.BooleanField(default=False)    
     date_created = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='av')
+    date_updated = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=100, default='available')
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)           
 
     def __str__(self):
@@ -27,7 +23,7 @@ class Books(models.Model):
 class BookComments(models.Model):
     
     comment = models.CharField(max_length=250)
-    date_created = models.DateTimeField(auto_now_add=True)    
+    date_created = models.DateTimeField(auto_now_add=True)        
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     book_comment = models.ForeignKey(Books, on_delete=models.CASCADE)    
 
@@ -37,8 +33,8 @@ class BookComments(models.Model):
 
 class BookCheckout(models.Model):
 
-    checkedout_date = models.DateTimeField(auto_now=True)
-    return_date = models.DateTimeField(auto_now=True) 
+    checkedout_date = models.DateTimeField(auto_now_add=True)
+    return_date = models.DateTimeField(auto_now=False) 
     is_returned = models.BooleanField(default=False)
     borrower = models.ForeignKey(CustomUser, on_delete=models.CASCADE)  
     book_checkout = models.ForeignKey(Books, on_delete=models.CASCADE)          

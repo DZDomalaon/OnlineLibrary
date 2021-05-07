@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+   
+<div class="container">
+    <div class="table-responsive table-hover">
+        <table class="table">
+        <thead class="thead-dark">
+            <th>Title</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th>Author</th>
+            <th></th>                    
+        </thead>
+        <tbody>
+        {% for books in owned_books %} 
+            <tr>
+                <td><strong>{{ books.title }}</strong></td>
+                <td><strong>{{ books.location }}</strong></td>
+                <td><strong>{{ books.status }}</strong></td>
+                <td><strong>{{ books.author }}</strong></td>
+                <td><a href="{% url 'books:bookpage' books.id %}" class="btn btn-primary">Read More &rarr;</a></td>
+            </tr>                   
+        {% endfor %}
+        </tbody>
+        </table>            
+    </div>
+</div>
+  
+{% endblock%}
