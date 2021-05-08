@@ -5,7 +5,7 @@
 <div class="container mt-4">
     
     {% if user.id == book_data.owner.id %}
-        <h2 class="d-flex justify-content-center">Update Article</h2>
+        <h2 class="d-flex justify-content-center">Update Book</h2>
         <div class="d-flex justify-content-center">  
             <form method="post">
                 {% csrf_token %}                  
@@ -13,7 +13,7 @@
                     <div class="row align-items-center mb-2 mt-2">
                         <div class="col">    
                             {{ field.label_tag }}					
-                            {{ field.errors }}
+                            <!-- {{ field.errors }} -->
                         </div>
                         <div class="col">
                             {{ field }}

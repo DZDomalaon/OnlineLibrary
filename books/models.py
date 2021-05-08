@@ -9,7 +9,7 @@ class Books(models.Model):
     title = models.CharField(max_length=250)
     author = models.CharField(max_length=250)
     location = models.CharField(max_length=250, blank=True, null=True)
-    book_image = models.ImageField(blank=True, null=True, upload_to='books/')
+    book_image = models.ImageField(blank=True, null=True, upload_to='books/', default='books/default.png')
     is_digital = models.BooleanField(default=False)    
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)

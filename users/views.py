@@ -1,10 +1,10 @@
 from django.contrib.auth import login, logout, authenticate 
 from .forms import LoginForm, RegisterForm, EditForm
+from books.forms import CreateBookForm
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import CustomUser
 from books.models import Books
-from .forms import LoginForm
 from django.shortcuts import render
 
 # Create your views here.
@@ -40,9 +40,14 @@ class LogoutView(TemplateView):
 class HomePageView(TemplateView): 
         
     def get(self, request):
+        CB_form = CreateBookForm(request.POST, request.FILES)
         books = Books.objects.all().order_by('-date_created')
+        context = {
+                'CB_form': CB_form,
+                'books':books
+            }
         if request.user.is_authenticated:        
-            return render(request,'users/homepage.html', {'books': books})
+            return render(request,'users/homepage.html', context)
         else:            
             form = LoginForm()
             return render(request, "users/login.html", {"form": form})
