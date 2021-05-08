@@ -21,15 +21,16 @@ class BookView(TemplateView):
 
     def post(request, *args, **kwargs):
 
-        template_name = 'books/create_book.html'
+        #template_name = 'users/homepage.html'
         CB_form = CreateBookForm(request.POST, request.FILES)
+        # import pdb; pdb.set_trace()
         if CB_form.is_valid():
             create_book = CB_form.save(commit=False)
             create_book.owner = request.user            
             CB_form.save()
             return redirect('users:homepage')
         else:
-            return render(request, template_name, {'CB_form':CB_form})
+            return redirect('users:homepage')
 
     def update_book(request, *args, **kwargs):
 
@@ -45,15 +46,18 @@ class BookView(TemplateView):
                 'book_image': book_data.book_image,
                 'is_digital': book_data.is_digital,
             }
+
             UB_form = EditBookForm(request.POST or None, request.FILES, instance=book_data, initial=initial_data)
             context = {
                 'book_data': book_data,
                 'UB_form': UB_form,
+                'pk': kwargs.get('pk')
             }
+
             if UB_form.is_valid():
                 update_book = UB_form.save(commit=False)
                 update_book.save()
-                return redirect('books:bookpage', kwargs.get('pk'))
+                return render(request, template_name, context)
             else:
                 UB_form = EditBookForm(request.POST, initial=initial_data)
                 return render(request, template_name, context)

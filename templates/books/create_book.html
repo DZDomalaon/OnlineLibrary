@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block head %}       
+{% block head %}      
+<link rel="stylesheet" type="text/css" href="{% static 'users/css/style.css' %}"> 
 {% endblock%}
 
 {% block content %}
@@ -11,7 +13,7 @@
     <form method="post" enctype="multipart/form-data">
 		{% csrf_token %}      
 		{% for field in CB_form %}
-			<div class="row align-items-center mb-0 mt-0">
+			<div class="row align-items-center mb-0 mt-2">
 				<div class="col">    
 					{{ field.label_tag }}
 					{{ field.errors }}
@@ -28,6 +30,5 @@
 	</form>           
 </div> 
 	<br>          
-	<!-- <p class="text-center">If you already have an account, <a href="{% url 'users:login' %}">login</a> instead.</p> -->
 </div>
 {% endblock %}

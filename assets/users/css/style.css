@@ -1,0 +1,24 @@
+.card {
+    box-shadow: 0 16px 48px #E3E7EB;
+    min-height: 200px;
+}
+
+#bookcard img {
+    height: 200px!important;
+    background-clip: padding-box;
+    object-fit: cover;
+  }
+
+.my-flex-card > div > div.card {
+    height: calc(100% - 15px);
+    margin-bottom: 15px;
+}
+
+/* .errorlist
+    {
+        color: red;
+}
+
+.error input, .error select {
+    border: 2px red solid;
+} */
