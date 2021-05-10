@@ -12,7 +12,7 @@
                     </div>
                     <div class="col">     
                         {% if book_page.owner.id == user.id %}        
-                            <a class="btn btn-outline-primary" href="{% url 'books:editbook' book_page.pk %}" role="button">Edit Book</a>
+                            <a class="btn btn-outline-primary" href="{% url 'books:editbook' book_page.id %}" role="button">Edit Book</a>
                             <a href="{% url 'books:deletebook' book_page.pk %}" class="btn btn-outline-danger">Delete Book</a> 
                         {% endif %}               
                     </div>

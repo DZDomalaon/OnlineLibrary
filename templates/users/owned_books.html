@@ -21,7 +21,10 @@
                 <td><strong>{{ books.location }}</strong></td>
                 <td><strong>{{ books.status }}</strong></td>
                 <td><strong>{{ books.author }}</strong></td>
-                <td><a href="{% url 'books:bookpage' books.id %}" class="btn btn-primary">Read More &rarr;</a></td>
+                <td>
+                    <a href="{% url 'books:bookpage' books.id %}" class="btn btn-warning">Update</a>
+                    <a href="{% url 'books:deletebook' books.id %}" class="btn btn-danger">Delete</a> 
+                </td>
             </tr>                   
         {% endfor %}
         </tbody>

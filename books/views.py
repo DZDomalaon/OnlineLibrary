@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import CreateBookForm, EditBookForm
+from .forms import CreateBookForm, EditBookForm, AddComment
 from django.views.generic import TemplateView
-from .models import Books
+from .models import Books, BookCheckout
+from django.utils import timezone
+import datetime
 
 
 class BookView(TemplateView):
@@ -47,11 +49,11 @@ class BookView(TemplateView):
                 'is_digital': book_data.is_digital,
             }
 
-            UB_form = EditBookForm(request.POST or None, request.FILES, instance=book_data, initial=initial_data)
+            UB_form = EditBookForm(request.POST, request.FILES, instance=book_data, initial=initial_data)
             context = {
                 'book_data': book_data,
                 'UB_form': UB_form,
-                'pk': kwargs.get('pk')
+                'pk': kwargs.get('pk'),
             }
 
             if UB_form.is_valid():
@@ -73,4 +75,62 @@ class BookView(TemplateView):
                 return redirect('users:homepage')
         else:
             return redirect('users:login')
+
+
+class BookCommentView(TemplateView):
+
+    def post(request, *args, **kwargs):
+
+        CC_form = AddComment(request.POST)
+        # import pdb; pdb.set_trace()
+        if CC_form.is_valid():
+            book_data = get_object_or_404(Books, pk=kwargs.get('pk'))        
+            create_comment = CC_form.save(commit=False)
+            create_comment.user = request.user
+            create_comment.book_comment = book_data
+            create_comment.save()
+            return redirect('users:homepage')
+        else:
+            return redirect('users:homepage')
+
+
+class BookCheckoutViews(TemplateView):
+
+    def post(request, *args, **kwargs):
+                    
+            # import pdb; pdb.set_trace()                    
+            book_data = Books.objects.get(pk=kwargs.get('pk'))
+            book_data.status = 'checkedout'
+            checkout = BookCheckout.objects.create(book_checkout=book_data, borrower=request.user)              
+            book_data.save()
+            checkout.save()
+            return redirect('users:homepage')
+
+
+class ReturnBookView(TemplateView):
+
+    def post(request, *args, **kwargs):
+
+        import pdb; pdb.set_trace()
+        book_data = Books.objects.get(pk=kwargs.get('pk'))        
+        book_data.status = 'available'
+        checkout = BookCheckout.objects.get(book_checkout=book_data, borrower=request.user)                                
+        checkout.return_date = datetime.datetime.now(tz=timezone.utc)
+        checkout.is_returned = 'True'
+        book_data.save()
+        checkout.save()
+        return redirect('users:borrowedbooks', request.user.id)
+
+
+class SearchBookView(TemplateView):
+
+    def post(request, *args, **kwargs):
+
+        if request.user.is_authenticated:
+            query = request.POST.get('bookSearch')
+            search = Books.objects.filter(title__icontains=query)
+            return render(request, 'books/search.html', {'search': search})
+        else:
+            return redirect('users:login')
+        
 

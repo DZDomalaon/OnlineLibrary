@@ -11,16 +11,44 @@
     <div class="container">
       <nav class="navbar navbar-expand-lg navbar-light bg-light"> 
         <div class="container-fluid">
-          {% block home %}        
-            <div class="text-center">
-              <!-- <a class="btn btn-primary" href="{% url 'books:createbook' %}" role="button">Create Book</a> -->
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                Create Book
-              </button>
-            </div>  
+          {% block home %}     
+          <div class="container">
+            <div class="row">
+              <div class="col">
+                <div class="text-center">                  
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createbook">
+                    Create Book
+                  </button>
+                </div> 
+              </div>
+              <div class="col">
+                <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Sort by:
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Available</a>
+                    <a class="dropdown-item" href="#">Digital</a>
+                    <a class="dropdown-item" href="#">Checked Out</a>                    
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <form method="POST" action="{% url 'books:search' %}">
+                  {% csrf_token %}
+                  <div class="input-group mb-3">
+                    <input type="search" class="form-control" name="bookSearch" placeholder="Search Book" aria-label="Search" aria-describedby="basic-addon2" value="{{ request.POST.get.bookSearch }}">
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i> Search</button>                    
+                    </div>
+                  </div>
+                </form>                                                               
+              </div>
+            </div>           
+          </div>                 
                         
-            <!-- Modal -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <!-- CREATE BOOK -->
+            <div class="modal fade" id="createbook" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
@@ -36,10 +64,11 @@
                         <div class="row align-items-center mb-0 mt-2">
                           <div class="col">    
                             {{ field.label }}: 
-                            <!-- {{ field.errors }} -->
+                            {{ field.errors }}
                           </div>
                           <div class="col popover-test" title="{{ field.errors|striptags }}">
                             {{ field }}
+                            <p>{{ field.cleaned_data }}</p>
                           </div>
                         </div>
                       {% endfor %}
@@ -61,14 +90,96 @@
     <div class="container">
       <div class="row ">
         {% for book in books %}
-        <div class="col md-3">          
-            <div class="card mb-2 mt-4" id="bookcard" style="width: 15rem;">
-                <img src="{{ book.book_image.url }}" class="card-img-top">
-                <div class="card-body">
-                  <strong><p class="card-title">{{ book.title }}</p></strong>
-                  <p class="card-text text-muted h6">{{ book.author }} | {{ book.date_created}} </p>                  
-                  <a href="{% url 'books:bookpage' book.id %}" class="btn btn-primary">Read &rarr;</a>
+        <div class="col md-3">                      
+            <div class="card mb-2 mt-4" id="bookcard" style="width: 15rem;">               
+              <img src="{{ book.book_image.url }}" class="card-img-top">
+              <!-- <div class="card-img-overlay col-md-6 offset-md-3">
+                <p class="text-block">{{ book.status }}</p>
+              </div> -->
+              <div class="card-body">
+                <strong><p class="card-title">{{ book.title }}</p></strong>
+                <p class="card-text text-muted h6">{{ book.author }} | {{ book.date_created}} </p>                                  
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#book{{ book.pk }}" value="{{ book.pk }}">
+                  Comment
+                </button>
+                {% if book.owner != user and book.status == 'available' %}
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#checkoutbook{{ book.pk }}" value="{{ book.pk }}">
+                  Checkout
+                </button>
+                {% endif %}
+
+                <!-- Checkout -->
+                <div class="modal fade bd-example-modal-sm" id="checkoutbook{{ book.pk }}" tabindex="-1" role="dialog" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" >Checkout Book</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        Do you want to checkout <b>{{ book.title }}</b>
+                      </div>
+                      <div class="modal-footer">                        
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <form method="post" action="{% url 'books:checkout' book.pk %}">  
+                          {%csrf_token%}                                              
+                          <button type="submit" class="btn btn-danger">Checkout Book</button>
+                        </form> 
+                      </div>
+                    </div>
+                  </div>
                 </div>
+
+                <!-- Comment -->
+                <div class="modal fade" id="book{{ book.pk }}" tabindex="-1" role="dialog" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Comments</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <form method="post" action="{% url 'books:addcomment' book.pk %}">
+                          {% csrf_token %}
+                          <div class="text-center">
+                            <b>{{ book.title }}</b>
+                            <p>Published by: {{ book.author }}</p>                              
+                          </div>
+                          <div class="form-group">
+                            
+                            <select multiple class="form-control" id="commentsection">
+                              {% for comment in comments %} 
+                                {% if comment.book_comment == book %}                               
+                                  <option disabled>
+                                   <b>{{ comment.user.get_full_name }}</b>: {{ comment }}                                    
+                                  </option>
+                                {% endif %}
+                              {% endfor %}
+                            </select>
+                          </div>                          
+                          <div class="form-group">
+                            {% for field in CC_form %}                            
+                            <div class="input-group mb-3">
+                              {{ field }}
+                              <div class="input-group-append">
+                                <button class="btn btn-info" type="submit" id="button-addon2">Add Comment</button>
+                              </div>
+                            </div>
+                            {% endfor %}
+                          </div>
+                        </form>
+                      </div>
+                      <div class="modal-footer">                        
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                     
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>          
         </div>    
         {% endfor %}     
