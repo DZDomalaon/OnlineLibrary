@@ -7,6 +7,7 @@
     height: 200px!important;
     background-clip: padding-box;
     object-fit: cover;
+    
   }
 
 .my-flex-card > div > div.card {
@@ -14,11 +15,15 @@
     margin-bottom: 15px;
 }
 
-/* .errorlist
-    {
-        color: red;
+.my-custom-scrollbar {    
+    height: 200px;
+    overflow: auto;
 }
 
-.error input, .error select {
-    border: 2px red solid;
-} */
+
+.text-block {
+position: absolute;
+border-radius: 25px;
+padding: 2px;  
+background-color: rgb(37, 185, 62);
+}
