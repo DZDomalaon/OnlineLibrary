@@ -64,10 +64,11 @@
                         <div class="row align-items-center mb-0 mt-2">
                           <div class="col">    
                             {{ field.label }}: 
-                            <!-- {{ field.errors }} -->
+                            {{ field.errors }}
                           </div>
                           <div class="col popover-test" title="{{ field.errors|striptags }}">
                             {{ field }}
+                            <p>{{ field.cleaned_data }}</p>
                           </div>
                         </div>
                       {% endfor %}
@@ -97,12 +98,11 @@
               </div> -->
               <div class="card-body">
                 <strong><p class="card-title">{{ book.title }}</p></strong>
-                <p class="card-text text-muted h6">{{ book.author }} | {{ book.date_created}} </p>                  
-                <!-- <a href="{% url 'books:bookpage' book.id %}" class="btn btn-primary">Read &rarr;</a> -->
+                <p class="card-text text-muted h6">{{ book.author }} | {{ book.date_created}} </p>                                  
                 <button type="button" class="btn btn-info" data-toggle="modal" data-target="#book{{ book.pk }}" value="{{ book.pk }}">
                   Comment
                 </button>
-                {% if book.owner != user %}
+                {% if book.owner != user and book.status == 'available' %}
                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#checkoutbook{{ book.pk }}" value="{{ book.pk }}">
                   Checkout
                 </button>

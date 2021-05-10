@@ -34,7 +34,7 @@ class BookComments(models.Model):
 class BookCheckout(models.Model):
 
     checkedout_date = models.DateTimeField(auto_now_add=True)
-    return_date = models.DateTimeField(null=True, blank=True, auto_now=True) 
+    return_date = models.DateTimeField(null=True, blank=True, auto_now=False) 
     is_returned = models.BooleanField(default=False)
     borrower = models.ForeignKey(CustomUser, on_delete=models.CASCADE)  
     book_checkout = models.ForeignKey(Books, on_delete=models.CASCADE)          

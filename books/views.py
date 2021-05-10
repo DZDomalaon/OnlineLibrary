@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CreateBookForm, EditBookForm, AddComment
 from django.views.generic import TemplateView
 from .models import Books, BookCheckout
+from django.utils import timezone
+import datetime
 
 
 class BookView(TemplateView):
@@ -23,7 +25,7 @@ class BookView(TemplateView):
 
         #template_name = 'users/homepage.html'
         CB_form = CreateBookForm(request.POST, request.FILES)
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         if CB_form.is_valid():
             create_book = CB_form.save(commit=False)
             create_book.owner = request.user            
@@ -95,13 +97,30 @@ class BookCommentView(TemplateView):
 class BookCheckoutViews(TemplateView):
 
     def post(request, *args, **kwargs):
-        
-            # import pdb; pdb.set_trace()
-            book_data = get_object_or_404(Books, pk=kwargs.get('pk'))
+                    
+            # import pdb; pdb.set_trace()                    
+            book_data = Books.objects.get(pk=kwargs.get('pk'))
             book_data.status = 'checkedout'
             checkout = BookCheckout.objects.create(book_checkout=book_data, borrower=request.user)              
+            book_data.save()
             checkout.save()
             return redirect('users:homepage')
+
+
+class ReturnBookView(TemplateView):
+
+    def post(request, *args, **kwargs):
+
+        import pdb; pdb.set_trace()
+        book_data = Books.objects.get(pk=kwargs.get('pk'))        
+        book_data.status = 'available'
+        checkout = BookCheckout.objects.get(book_checkout=book_data, borrower=request.user)                                
+        checkout.return_date = datetime.datetime.now(tz=timezone.utc)
+        checkout.is_returned = 'True'
+        book_data.save()
+        checkout.save()
+        return redirect('users:borrowedbooks', request.user.id)
+
 
 class SearchBookView(TemplateView):
 

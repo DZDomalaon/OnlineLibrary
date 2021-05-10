@@ -20,8 +20,8 @@
                                     {{ user.get_full_name }}
                                 </a>                                         
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <a class="dropdown-item" href="{% url  'users:ownedbooks' user.id %}">Owned Books</a>
-                                <a class="dropdown-item" href="#">Borrowed Books</a>
+                                <a class="dropdown-item" href="{% url 'users:ownedbooks' user.id %}">Owned Books</a>
+                                <a class="dropdown-item" href="{% url 'users:borrowedbooks' user.id %}">Borrowed Books</a>
                                 <a class="dropdown-item" href="{% url  'users:edituser' user.id %}">Edit</a>
                                 <a class="dropdown-item" href="{% url 'users:logout' %}">Logout</a>
                                 </div>

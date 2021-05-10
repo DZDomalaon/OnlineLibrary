@@ -4,7 +4,7 @@ from books.forms import CreateBookForm, EditBookForm, AddComment
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import CustomUser
-from books.models import Books, BookComments
+from books.models import Books, BookComments, BookCheckout
 from django.shortcuts import render
 
 # Create your views here.
@@ -44,6 +44,7 @@ class HomePageView(TemplateView):
         CB_form = CreateBookForm(request.POST, request.FILES)
         CC_form = AddComment()
         books = Books.objects.all().order_by('-date_created')
+        co_books = BookCheckout.objects.all()
         comments = BookComments.objects.all()
         # import pdb; pdb.set_trace()
         context = {
@@ -51,6 +52,7 @@ class HomePageView(TemplateView):
                 'CC_form': CC_form,
                 'books':books,
                 'comments': comments,
+                'co_books': co_books,
             }
         if request.user.is_authenticated:        
             return render(request,'users/homepage.html', context)
@@ -72,6 +74,25 @@ class OwnedBooksView(TemplateView):
         page_user = get_object_or_404(CustomUser, id=self.kwargs['pk'])    
         context = {
                 'owned_books': owned_books,
+                'page_user': page_user,
+                'UB_form': UB_form,
+            }
+
+        return context
+
+
+class BorrowedBooksView(TemplateView):
+    
+    template_name = 'users/borrowed_books.html'
+
+    def get_context_data(self, *args, **kwargs):
+
+        borrowed_books = BookCheckout.objects.filter(borrower=self.request.user).order_by('-checkedout_date')        
+        context = super(BorrowedBooksView,self).get_context_data(*args, **kwargs)
+        UB_form = EditBookForm()        
+        page_user = get_object_or_404(CustomUser, id=self.kwargs['pk'])    
+        context = {
+                'borrowed_books': borrowed_books,
                 'page_user': page_user,
                 'UB_form': UB_form,
             }

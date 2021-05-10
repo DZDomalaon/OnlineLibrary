@@ -14,13 +14,21 @@ class CreateBookForm(forms.ModelForm):
         fields = ('book_image', 'title', 'author', 'location', 'is_digital')
 
 
-    # def clean_is_digital(self):
+    # def clean_location(self):
         
-    #     location = self.cleaned_data.get("location")
-    #     if not location:
-    #         raise forms.ValidationError("Please input the location of the book.")
-    #     else:
-    #         return location
+    #     is_digital = self.cleaned_data.get('is_digital', True)
+    #     if is_digital:            
+    #         location = self.cleaned_data.get('location', None)
+    #         if location == None:
+    #             self._errors['location'] = self.error_class([
+    #                 'Location required here'])
+    #     return self.location
+
+        # is_digital = self.cleaned_data.get("is_digital")
+        # if is_digital == '':
+        #     raise forms.ValidationError("Please input the location of the book.")
+        # else:
+        #     return is_digital
 
 
 class EditBookForm(forms.ModelForm):

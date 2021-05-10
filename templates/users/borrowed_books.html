@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+   
+<div class="container">
+    <div class="table-responsive table-hover">
+        <table class="table">
+        <thead class="thead-dark">
+            <th>Title</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th>Checked Out Date</th>
+            <th>Returned Date</th>            
+            <th></th>                    
+        </thead>
+        <tbody>
+        {% for books in borrowed_books %} 
+            <tr>
+                <td><strong>{{ books.book_checkout.title }}</strong></td>
+                <td><strong>{{ books.book_checkout.location }}</strong></td>
+                <td><strong>{{ books.book_checkout.status }}</strong></td>
+                <td><strong>{{ books.checkedout_date }}</strong></td>
+                <td><strong>{{ books.return_date }}</strong></td>
+                <td>
+                    <form method="POST" enctype="multipart/form-data" action="{% url 'books:returnbook' books.book_checkout.pk %}">  
+                        {%csrf_token%}
+                        {% if not books.is_returned %}                                              
+                            <button type="submit" class="btn btn-warning">Return</button>
+                        {% endif %}
+                    </form>                   
+                </td>
+            </tr>                   
+        {% endfor %}
+        </tbody>
+        </table>            
+    </div>
+</div>
+  
+{% endblock%}
