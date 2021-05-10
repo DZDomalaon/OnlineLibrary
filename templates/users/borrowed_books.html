@@ -20,7 +20,13 @@
             <tr>
                 <td><strong>{{ books.book_checkout.title }}</strong></td>
                 <td><strong>{{ books.book_checkout.location }}</strong></td>
-                <td><strong>{{ books.book_checkout.status }}</strong></td>
+                <td>
+                    <strong>
+                    {% if books.is_returned %}
+                        Returned
+                    {% endif %}
+                    </strong>       
+                </td>
                 <td><strong>{{ books.checkedout_date }}</strong></td>
                 <td><strong>{{ books.return_date }}</strong></td>
                 <td>

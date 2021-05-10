@@ -111,10 +111,10 @@ class ReturnBookView(TemplateView):
 
     def post(request, *args, **kwargs):
 
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         book_data = Books.objects.get(pk=kwargs.get('pk'))        
         book_data.status = 'available'
-        checkout = BookCheckout.objects.get(book_checkout=book_data, borrower=request.user)                                
+        checkout = BookCheckout.objects.get(book_checkout=book_data, borrower=request.user, is_returned='False')                                
         checkout.return_date = datetime.datetime.now(tz=timezone.utc)
         checkout.is_returned = 'True'
         book_data.save()
