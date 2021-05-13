@@ -6,10 +6,12 @@
 #bookcard img {
     height: 200px!important;
     background-clip: padding-box;
-    object-fit: cover;
-    
+    object-fit: cover;        
   }
 
+#bookcard {    
+    width: 15rem;
+}
 .my-flex-card > div > div.card {
     height: calc(100% - 15px);
     margin-bottom: 15px;
@@ -20,10 +22,15 @@
     overflow: auto;
 }
 
-
 .text-block {
-position: absolute;
-border-radius: 25px;
-padding: 2px;  
-background-color: rgb(37, 185, 62);
+    font-size: 12px;
+    border-radius: 15px;
+    padding: 0px;  
+    background-color: rgb(37, 185, 62);
+    color: white;
+    text-align: center;
+}
+
+#userfield {
+    position: fixed;
 }

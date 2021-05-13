@@ -1,5 +1,6 @@
 from django.forms import ModelForm
 from .models import Books, BookComments, BookCheckout
+from django.core.exceptions import ValidationError
 from django import forms
 
 class CreateBookForm(forms.ModelForm):
@@ -14,21 +15,20 @@ class CreateBookForm(forms.ModelForm):
         fields = ('book_image', 'title', 'author', 'location', 'is_digital')
 
 
-    # def clean_location(self):
-        
-    #     is_digital = self.cleaned_data.get('is_digital', True)
-    #     if is_digital:            
-    #         location = self.cleaned_data.get('location', None)
-    #         if location == None:
-    #             self._errors['location'] = self.error_class([
-    #                 'Location required here'])
-    #     return self.location
+        def clean_is_digital(self):
+            
+            is_digital = self.cleaned_data.get('is_digital', '') == 'on'
+            if is_digital != None:
+                location = self.cleaned_data.get('location')
+                if location == None:
+                    raise ValidationError('Location field is required')
+                return self.location
 
-        # is_digital = self.cleaned_data.get("is_digital")
-        # if is_digital == '':
-        #     raise forms.ValidationError("Please input the location of the book.")
-        # else:
-        #     return is_digital
+            # is_digital = self.cleaned_data.get("is_digital")
+            # if is_digital == None:
+            #     raise forms.ValidationError("Please input the location of the book.")
+            # else:
+            #     return is_digital
 
 
 class EditBookForm(forms.ModelForm):

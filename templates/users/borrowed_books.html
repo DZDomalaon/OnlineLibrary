@@ -6,7 +6,7 @@
    
 <div class="container">
     <div class="table-responsive table-hover">
-        <table class="table">
+        <table class="table text-center">
         <thead class="thead-dark">
             <th>Title</th>
             <th>Location</th>
@@ -24,6 +24,8 @@
                     <strong>
                     {% if books.is_returned %}
                         Returned
+                    {% else %}
+                        Borrowed
                     {% endif %}
                     </strong>       
                 </td>

@@ -23,11 +23,9 @@ class LoginView(TemplateView):
                 login(request, user)                             
                 return redirect("users:homepage")                
             else:                   
-                form = LoginForm(request.POST)            
-                messages.error(request,"Invalid username or password.")
+                form = LoginForm(request.POST)                            
                 return render(request, "users/login.html", {"form":form})
-        else:
-            messages.error(request,"Invalid form")
+        else:            
             return render(request, "users/login.html", {"form":form})
 
 
@@ -68,14 +66,14 @@ class OwnedBooksView(TemplateView):
     def get_context_data(self, *args, **kwargs):
 
         owned_books = Books.objects.filter(owner=self.request.user).order_by('-date_created')        
-        context = super(OwnedBooksView,self).get_context_data(*args, **kwargs)
-        UB_form = EditBookForm()
-        
-        page_user = get_object_or_404(CustomUser, id=self.kwargs['pk'])    
+        # context = super(OwnedBooksView,self).get_context_data(*args, **kwargs)
+        CB_form = CreateBookForm()
+        UB_form = EditBookForm()                  
+
         context = {
-                'owned_books': owned_books,
-                'page_user': page_user,
+                'owned_books': owned_books,                
                 'UB_form': UB_form,
+                'CB_form': CB_form,
             }
 
         return context
