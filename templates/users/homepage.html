@@ -7,7 +7,7 @@
 {% endblock %}
 
 <html>
-  <body>
+<body>
     <div class="container">
       <nav class="navbar navbar-expand-lg navbar-light bg-light"> 
         <div class="container-fluid">
@@ -15,87 +15,101 @@
           <div class="container">
             <div class="row">
               <div class="col">
-                <div class="text-center">                  
-                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createbook">
-                    Create Book
-                  </button>
-                </div> 
-              </div>
-              <div class="col">
-                <div class="dropdown">
-                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Sort by:
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="#">Available</a>
-                    <a class="dropdown-item" href="#">Digital</a>
-                    <a class="dropdown-item" href="#">Checked Out</a>                    
-                  </div>
-                </div>
-              </div>
-              <div class="col">
-                <form method="POST" action="{% url 'books:search' %}">
-                  {% csrf_token %}
+                <form method="POST" action="{% url 'books:filter' %}">
+                  {% csrf_token %}             
                   <div class="input-group mb-3">
-                    <input type="search" class="form-control" name="bookSearch" placeholder="Search Book" aria-label="Search" aria-describedby="basic-addon2" value="{{ request.POST.get.bookSearch }}">
-                    <div class="input-group-append">
-                      <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i> Search</button>                    
+                    <select name="book_filter" class="custom-select">
+                      <!-- <option selected>----------------------------------------</option> -->
+                      <option selected value="available">Available</option>
+                      <option value="True">Digital</option>
+                      <option value="checkedout">Checked Out</option>
+                    </select>
+                    <div class="input-group-append">                      
+                      <button class="btn btn-secondary" type="submit">
+                        <i class="bi bi-filter"></i>
+                        Filter
+                      </button>
                     </div>
                   </div>
-                </form>                                                               
+                </form>       
+              </div>              
+              <div class="col">    
+                <form method="POST" action="{% url 'books:search' %}">
+                  {% csrf_token %}                            
+                  <div class="input-group mb-3">                  
+                    <input type="search" class="form-control" name="bookSearch" placeholder="Search Book" aria-label="Search" aria-describedby="basic-addon2" value="{{ request.POST.get.bookSearch }}">                    
+                    <div class="input-group-append">
+                      <button class="btn btn-secondary" type="submit"><i class="bi bi-search"></i> Search</button>                    
+                    </div>                    
+                  </div>    
+                </form>                                                                                  
               </div>
             </div>           
           </div>                 
                         
-            <!-- CREATE BOOK -->
-            <div class="modal fade" id="createbook" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add a Book</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
-                    <form method="post" action="{% url 'books:createbook' %}" enctype="multipart/form-data">
-                      {% csrf_token %} 
-                      {% for field in CB_form %}
-                        <div class="row align-items-center mb-0 mt-2">
-                          <div class="col">    
-                            {{ field.label }}: 
-                            {{ field.errors }}
-                          </div>
-                          <div class="col popover-test" title="{{ field.errors|striptags }}">
-                            {{ field }}
-                            <p>{{ field.cleaned_data }}</p>
-                          </div>
-                        </div>
-                      {% endfor %}
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                        
-                        <button type="submit" class="btn btn-primary ">Add Book</button>
-                      </div>
-                    </form>  
-                  </div>  
+          <!-- CREATE BOOK -->
+          <!-- <div class="modal fade" id="createbook" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Add a Book</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
                 </div>
+                <div class="modal-body">
+                  <form method="post" action="{% url 'books:createbook' %}" enctype="multipart/form-data">
+                    {% csrf_token %} 
+                    {% for field in CB_form %}
+                      <div class="row align-items-center mb-0 mt-2">
+                        <div class="col">    
+                          {{ field.label }}:                             
+                        </div>
+                        <div class="col popover-test" title="{{ field.errors|striptags }}">
+                          {{ field }}
+                          <p>{{ field.cleaned_data }}</p>
+                        </div>
+                        {% if form.errors %}                            
+                          {% for error in field.errors %}
+                              <div class="alert alert-danger">
+                                  <strong>{{ error|escape }}</strong>
+                                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                              </div>
+                          {% endfor %}                            
+                        {% endif %}
+                      </div>
+                    {% endfor %}
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                        
+                      <button type="submit" class="btn btn-primary ">Add Book</button>
+                    </div>
+                  </form>  
+                </div>  
               </div>
-            </div>               
+            </div>
+          </div>                -->
           {% endblock %}    
         </div>        
       </nav> 
     </div>  
-
+    
+    <!-- Card -->
     {% block content %}
+    <hr>
+    </div> 
     <div class="container">
       <div class="row ">
         {% for book in books %}
         <div class="col md-3">                      
             <div class="card mb-2 mt-4" id="bookcard" style="width: 15rem;">               
               <img src="{{ book.book_image.url }}" class="card-img-top">
-              <!-- <div class="card-img-overlay col-md-6 offset-md-3">
-                <p class="text-block">{{ book.status }}</p>
-              </div> -->
+              <div class="card-img-overlay col-md-6 offset-md-3">
+                {% if book.status == 'checkedout' %}
+                <p class="text-block" style="background-color: red;">checked out</p>                  
+                {% else %}               
+                <p class="text-block">{{ book.status }}</p>   
+                {% endif %}
+              </div>
               <div class="card-body">
                 <strong><p class="card-title">{{ book.title }}</p></strong>
                 <p class="card-text text-muted h6">{{ book.author }} | {{ book.date_created}} </p>                                  
@@ -186,5 +200,5 @@
       </div>
     </div>
     {% endblock%}
-  </body>
+</body>
 </html>

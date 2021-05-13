@@ -10,13 +10,11 @@ class BookView(TemplateView):
     
     def get(request, *args, **kwargs):
 
-        if request.user.is_authenticated:
-            book_page = get_object_or_404(Books, pk=kwargs.get('pk'))
-            context = {
-                    #'form': form, 
-                    'book_page': book_page, 
-                    #'post_comment': post_comment,
-            }
+        book_page = get_object_or_404(Books, pk=kwargs.get('pk'))
+        context = {                
+            'book_page': book_page,                 
+        }
+        if request.user.is_authenticated:            
             return render(request, "books/book_page.html",  context)
         else:
             return render(request, "books/book_page.html",  context)
@@ -24,20 +22,21 @@ class BookView(TemplateView):
     def post(request, *args, **kwargs):
 
         #template_name = 'users/homepage.html'
-        CB_form = CreateBookForm(request.POST, request.FILES)
-        # import pdb; pdb.set_trace()
-        if CB_form.is_valid():
+        import pdb; pdb.set_trace()
+        CB_form = CreateBookForm(request.POST, request.FILES)        
+        if CB_form.is_valid():            
             create_book = CB_form.save(commit=False)
             create_book.owner = request.user            
             CB_form.save()
-            return redirect('users:homepage')
+            return redirect('users:ownedbooks', request.user.id)
         else:
             return redirect('users:homepage')
 
     def update_book(request, *args, **kwargs):
 
-        template_name = 'books/edit_book.html'
+        template_name = 'users/owned_books.html'
 
+        # import pdb; pdb.set_trace()
         if request.user.is_authenticated:
             book_data = get_object_or_404(Books, pk=kwargs.get('pk'))
 
@@ -59,7 +58,7 @@ class BookView(TemplateView):
             if UB_form.is_valid():
                 update_book = UB_form.save(commit=False)
                 update_book.save()
-                return render(request, template_name, context)
+                return redirect('users:ownedbooks', request.user.id)
             else:
                 UB_form = EditBookForm(request.POST, initial=initial_data)
                 return render(request, template_name, context)
@@ -72,7 +71,7 @@ class BookView(TemplateView):
             book = get_object_or_404(Books, pk=kwargs.get('pk'))
             if request.user == book.owner:
                 book.delete()
-                return redirect('users:homepage')
+                return redirect('users:ownedbooks', request.user.pk)
         else:
             return redirect('users:login')
 
@@ -98,20 +97,18 @@ class BookCheckoutViews(TemplateView):
 
     def post(request, *args, **kwargs):
                     
-            # import pdb; pdb.set_trace()                    
-            book_data = Books.objects.get(pk=kwargs.get('pk'))
-            book_data.status = 'checkedout'
-            checkout = BookCheckout.objects.create(book_checkout=book_data, borrower=request.user)              
-            book_data.save()
-            checkout.save()
-            return redirect('users:homepage')
+        # import pdb; pdb.set_trace()                    
+        book_data = Books.objects.get(pk=kwargs.get('pk'))
+        book_data.status = 'checkedout'
+        checkout = BookCheckout.objects.create(book_checkout=book_data, borrower=request.user)              
+        book_data.save()        
+        return redirect('users:homepage')
 
 
 class ReturnBookView(TemplateView):
 
     def post(request, *args, **kwargs):
-
-        # import pdb; pdb.set_trace()
+        
         book_data = Books.objects.get(pk=kwargs.get('pk'))        
         book_data.status = 'available'
         checkout = BookCheckout.objects.get(book_checkout=book_data, borrower=request.user, is_returned='False')                                
@@ -125,12 +122,28 @@ class ReturnBookView(TemplateView):
 class SearchBookView(TemplateView):
 
     def post(request, *args, **kwargs):
-
+        
         if request.user.is_authenticated:
             query = request.POST.get('bookSearch')
-            search = Books.objects.filter(title__icontains=query)
-            return render(request, 'books/search.html', {'search': search})
+            books = Books.objects.filter(title__icontains=query).order_by('-date_created')
+            return render(request, 'users/homepage.html', {'books': books})
         else:
             return redirect('users:login')
         
 
+class FilterBookView(TemplateView):
+
+    def post(request, *args, **kwargs):
+
+        # import pdb; pdb.set_trace()
+        if request.user.is_authenticated:
+            query = request.POST.get('book_filter')
+
+            if query == 'True':
+                books = Books.objects.filter(is_digital=query).order_by('-date_created')                                
+            else:                
+                books = Books.objects.filter(status=query).order_by('-date_created')                            
+            
+            return render(request, 'users/homepage.html', {'books': books})
+        else:
+            return redirect('users:login')

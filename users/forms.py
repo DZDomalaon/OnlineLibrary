@@ -7,8 +7,8 @@ from django import forms
 
 class LoginForm(forms.Form):
     
-    email = forms.CharField(label="Email", required=True)
-    password = forms.CharField(label="Password",widget=forms.PasswordInput, required=True)
+    email = forms.CharField(label="Email", required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    password = forms.CharField(label="Password",widget=forms.PasswordInput(attrs={'class': 'form-control'}), required=True)
 
     field = ('email', 'password')
     def auth(self, request):        
@@ -20,9 +20,9 @@ alphabet = RegexValidator(r'^[a-zA-Z]*$', 'Only alphabet characters are allowed.
 
 class RegisterForm(UserCreationForm):
         
-    first_name = forms.CharField(label="First name", required=True, validators=[alphabet])
-    last_name = forms.CharField(label="Last name", required=True, validators=[alphabet])
-    email = forms.CharField(label="Email", required=True)        
+    first_name = forms.CharField(label="First name", required=True, validators=[alphabet], widget=forms.TextInput(attrs={'class': 'form-control'}))
+    last_name = forms.CharField(label="Last name", required=True, validators=[alphabet],widget=forms.TextInput(attrs={'class': 'form-control'}))
+    email = forms.CharField(label="Email", required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))        
 
     class Meta:
         model = CustomUser
@@ -40,8 +40,8 @@ class RegisterForm(UserCreationForm):
 
 class EditForm(forms.ModelForm):
     
-    first_name = forms.CharField(label="First name", required=True, validators=[alphabet])
-    last_name = forms.CharField(label="Last name", required=True, validators=[alphabet])
+    first_name = forms.CharField(label="First name", required=True, validators=[alphabet], widget=forms.TextInput(attrs={'class': 'form-control'}))
+    last_name = forms.CharField(label="Last name", required=True, validators=[alphabet], widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = CustomUser
