@@ -5,7 +5,7 @@
 {% block head %}
 <link rel="stylesheet" type="text/css" href="{% static 'users/css/style.css' %}">
 {% endblock %}
-
+<!doctype html>
 <html>
 <body>
     <div class="container">
@@ -15,7 +15,7 @@
           <div class="container">
             <div class="row">
               <div class="col">
-                <form method="POST" action="{% url 'books:filter' %}">
+                <form method="POST" action="{% url 'users:filter' %}">
                   {% csrf_token %}             
                   <div class="input-group mb-3">
                     <select name="book_filter" class="custom-select">
@@ -34,7 +34,7 @@
                 </form>       
               </div>              
               <div class="col">    
-                <form method="POST" action="{% url 'books:search' %}">
+                <form method="POST" action="{% url 'users:search' %}">
                   {% csrf_token %}                            
                   <div class="input-group mb-3">                  
                     <input type="search" class="form-control" name="bookSearch" placeholder="Search Book" aria-label="Search" aria-describedby="basic-addon2" value="{{ request.POST.get.bookSearch }}">                    
@@ -105,9 +105,9 @@
               <img src="{{ book.book_image.url }}" class="card-img-top">
               <div class="card-img-overlay col-md-6 offset-md-3">
                 {% if book.status == 'checkedout' %}
-                <p class="text-block" style="background-color: red;">checked out</p>                  
+                <p class="card-text-block" style="background-color: red;">checked out</p>                  
                 {% else %}               
-                <p class="text-block">{{ book.status }}</p>   
+                <p class="card-text-block">{{ book.status }}</p>   
                 {% endif %}
               </div>
               <div class="card-body">

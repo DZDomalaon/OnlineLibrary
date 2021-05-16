@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CreateBookForm, EditBookForm, AddComment
 from django.views.generic import TemplateView
 from .models import Books, BookCheckout
+from django.contrib import messages
 from django.utils import timezone
 import datetime
 
@@ -20,9 +21,7 @@ class BookView(TemplateView):
             return render(request, "books/book_page.html",  context)
 
     def post(request, *args, **kwargs):
-
-        #template_name = 'users/homepage.html'
-        import pdb; pdb.set_trace()
+                
         CB_form = CreateBookForm(request.POST, request.FILES)        
         if CB_form.is_valid():            
             create_book = CB_form.save(commit=False)
@@ -35,8 +34,7 @@ class BookView(TemplateView):
     def update_book(request, *args, **kwargs):
 
         template_name = 'users/owned_books.html'
-
-        # import pdb; pdb.set_trace()
+        
         if request.user.is_authenticated:
             book_data = get_object_or_404(Books, pk=kwargs.get('pk'))
 
@@ -102,6 +100,7 @@ class BookCheckoutViews(TemplateView):
         book_data.status = 'checkedout'
         checkout = BookCheckout.objects.create(book_checkout=book_data, borrower=request.user)              
         book_data.save()        
+        messages.success(request, 'Check your borrowed books') 
         return redirect('users:homepage')
 
 

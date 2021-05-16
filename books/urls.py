@@ -11,6 +11,6 @@ urlpatterns = [
     path('<int:pk>/bookpage/deletebook', views.BookView.delete, name='deletebook'),
     path('<int:pk>/bookpage/checkout', views.BookCheckoutViews.post, name='checkout'),
     path('<int:pk>/bookpage/returnbook', views.ReturnBookView.post, name='returnbook'),
-    path('search/', views.SearchBookView.post, name='search'),
-    path('filter/', views.FilterBookView.post, name='filter'),
+    # path('search/', views.SearchBookView.post, name='search'),
+    # path('filter/', views.FilterBookView.post, name='filter'),
 ]

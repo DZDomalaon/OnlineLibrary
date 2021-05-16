@@ -1,0 +1,73 @@
+TASK
+- improve UI
+-form validation
+    -Profile edit
+-base.html
+    - fix blocks
+- comments and likes
+
+-use self
+-validator file
+
+API and serializer
+  Wednesday 
+    - JQuery
+    - Javascript
+
+
+Individual Proj.
+Req
+
+Login page
+Account Creation(validation)
+
+
+Add ebook
+-is_digital(if true, no need location field)
+
+
+Edit book
+-img
+-title
+-author
+-location
+
+Borrowed Books
+tanang gi-borrow sa user
+-Book
+-location
+-status
+-checked out date
+-return date
+-update btn(if not returned)
+
+Owned Books
+-Book
+-location
+-status
+-owner
+-update btn
+
+
+
+
+
+Combine filter and search
+Authenticate of html
+
+Feedback every actions
+Further testing
+
+Check always the validations
+
+
+class based
+Status tag
+-position: absolute
+
+homepage
+class
+
+views
+error handling
+

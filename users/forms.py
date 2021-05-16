@@ -22,11 +22,13 @@ class RegisterForm(UserCreationForm):
         
     first_name = forms.CharField(label="First name", required=True, validators=[alphabet], widget=forms.TextInput(attrs={'class': 'form-control'}))
     last_name = forms.CharField(label="Last name", required=True, validators=[alphabet],widget=forms.TextInput(attrs={'class': 'form-control'}))
-    email = forms.CharField(label="Email", required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))        
+    email = forms.CharField(label="Email", required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))   
+    password1 = forms.CharField(label="Password", required=True, widget=forms.PasswordInput(attrs={'class': 'form-control'}))   
+    password2 = forms.CharField(label="Confirm Password", required=True, widget=forms.PasswordInput(attrs={'class': 'form-control'}))   
 
     class Meta:
         model = CustomUser
-        fields = ('first_name','last_name','email')
+        fields = ('first_name','last_name', 'email',)
 
     def clean_password2(self):        
         password1 = self.cleaned_data.get("password1")
