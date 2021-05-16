@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate 
 from .forms import LoginForm, RegisterForm, EditForm
 from books.forms import CreateBookForm, EditBookForm, AddComment
@@ -20,7 +21,7 @@ class LoginView(TemplateView):
         if form.is_valid():            
             user = form.auth(request)                    
             if user is not None:
-                login(request, user)                             
+                login(request, user)                                        
                 return redirect("users:homepage")                
             else:                   
                 form = LoginForm(request.POST)                            
@@ -38,15 +39,13 @@ class LogoutView(TemplateView):
 
 class HomePageView(TemplateView): 
         
-    def get(self, request):
-        CB_form = CreateBookForm(request.POST, request.FILES)
+    def get(self, request):        
         CC_form = AddComment()
         books = Books.objects.all().order_by('-date_created')
         co_books = BookCheckout.objects.all()
         comments = BookComments.objects.all()
         # import pdb; pdb.set_trace()
-        context = {
-                'CB_form': CB_form,
+        context = {                
                 'CC_form': CC_form,
                 'books':books,
                 'comments': comments,
@@ -64,7 +63,7 @@ class OwnedBooksView(TemplateView):
     template_name = 'users/owned_books.html'
 
     def get_context_data(self, *args, **kwargs):
-
+                              
         owned_books = Books.objects.filter(owner=self.request.user).order_by('-date_created')        
         # context = super(OwnedBooksView,self).get_context_data(*args, **kwargs)
         CB_form = CreateBookForm()
@@ -111,8 +110,8 @@ class RegisterView(TemplateView):
             test = form.save()                                 
             username = form.cleaned_data.get('email')            
             # password = form.cleaned_data.get('password')            
-            user = authenticate(username=username, password=test.set_password(form.cleaned_data.get('password')))            
-            return redirect("users:login")            
+            user = authenticate(username=username, password=test.set_password(form.cleaned_data.get('password')))                        
+            return redirect("users:register")            
         else:
             form = RegisterForm(request.POST)
             return render(request, "users/register.html", {"form":form})
@@ -121,7 +120,7 @@ class RegisterView(TemplateView):
 class EditUserView(TemplateView):
 
     def get(self, request, **kwargs):
-        page_user = get_object_or_404(CustomUser, **kwargs)          
+        page_user = get_object_or_404(CustomUser, pk=request.user.pk)          
         form = EditForm(instance=request.user)                      
         context = {
                 'form': form,
@@ -140,8 +139,9 @@ class EditUserView(TemplateView):
         page_user = get_object_or_404(CustomUser, **kwargs)              
         if form.is_valid():                         
             update_user = form.save(commit=False)
-            update_user.save()                             
-            return redirect("users:profile", request.user.id)  
-        else:
+            update_user.save()
+            messages.success(request, 'Updated user details successfully.')                             
+            return redirect("users:edituser", request.user.id)  
+        else:            
             form = EditForm(request.POST,  initial=initial_data)        
             return render(request, "users/edituser.html", {'form':form, 'page_user':page_user})

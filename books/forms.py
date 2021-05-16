@@ -17,18 +17,21 @@ class CreateBookForm(forms.ModelForm):
 
         def clean_is_digital(self):
             
-            is_digital = self.cleaned_data.get('is_digital', '') == 'on'
-            if is_digital != None:
+            is_digital = self.cleaned_data.get('is_digital')
+            if is_digital == False:
                 location = self.cleaned_data.get('location')
                 if location == None:
                     raise ValidationError('Location field is required')
-                return self.location
+                return self.is_digital
 
-            # is_digital = self.cleaned_data.get("is_digital")
-            # if is_digital == None:
-            #     raise forms.ValidationError("Please input the location of the book.")
-            # else:
-            #     return is_digital
+        def clean_location(self):
+
+            location = self.cleaned_data.get('location')
+            if location:
+                is_digital = self.cleaned_data.get('is_digital')
+                if is_digital:
+                    raise ValidationError('Please uncheck the is digital')
+                return self.location
 
 
 class EditBookForm(forms.ModelForm):
@@ -48,10 +51,3 @@ class AddComment(forms.ModelForm):
     class Meta:
         model = BookComments
         fields = ('comment',)
-
-
-# class Checkout(forms.ModelForm):
-
-#     class Meta:
-#         model = BookCheckout
-#         fields = ()

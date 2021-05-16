@@ -4,7 +4,7 @@
 }
 
 #bookcard img {
-    height: 200px!important;
+    height: 200px;
     background-clip: padding-box;
     object-fit: cover;        
   }
@@ -12,25 +12,13 @@
 #bookcard {    
     width: 15rem;
 }
-.my-flex-card > div > div.card {
-    height: calc(100% - 15px);
-    margin-bottom: 15px;
-}
 
-.my-custom-scrollbar {    
-    height: 200px;
-    overflow: auto;
-}
-
-.text-block {
+.card-text-block {
+    position: absolute;
     font-size: 12px;
     border-radius: 15px;
-    padding: 0px;  
+    padding: 2px;  
     background-color: rgb(37, 185, 62);
     color: white;
     text-align: center;
-}
-
-#userfield {
-    position: fixed;
 }

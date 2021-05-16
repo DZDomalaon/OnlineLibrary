@@ -27,7 +27,7 @@
           <td><strong>{{ books.status }}</strong></td>
           <td><strong>{{ books.author }}</strong></td>
           <td>
-              <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#book{{ books.pk }}" >Update</button>
+              <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#book{{ books.pk }}" value="{{ books.pk }}">Update</button>
               <a href="{% url 'books:deletebook' books.id %}" class="btn btn-danger">Delete</a> 
           </td>
       </tr>
@@ -48,12 +48,12 @@
                 {% for field in UB_form %}
                   <div class="row align-items-center mb-0 mt-2">
                     <div class="col">    
-                      {{ field.label }}: 
-                      {{ field.errors }}
+                      {{ field.label }}:                       
                     </div>
                     <div class="col popover-test" title="{{ field.errors|striptags }}">
-                      {{ field }}                      
+                      {{ field }}                                            
                     </div>
+                    {% include 'messages.html'%}
                   </div>  
                 {% endfor %}
                 <div class="modal-footer">
@@ -86,18 +86,10 @@
                   <div class="col">    
                     {{ field.label }}:                             
                   </div>
-                  <div class="col popover-test" title="{{ field.errors|striptags }}">
-                    {{ field }}
-                    <p>{{ field.cleaned_data }}</p>
+                  <div class="col popover-test">
+                    {{ field }}                    
                   </div>
-                  {% if form.errors %}                            
-                    {% for error in field.errors %}
-                        <div class="alert alert-danger">
-                            <strong>{{ error|escape }}</strong>
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                        </div>
-                    {% endfor %}                            
-                  {% endif %}
+                  {% include 'messages.html' %}                                                
                 </div>
               {% endfor %}
               <div class="modal-footer">

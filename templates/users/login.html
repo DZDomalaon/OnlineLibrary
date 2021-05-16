@@ -17,16 +17,16 @@
               {{ field.label_tag }}
               {% if field.help_text %}
                 <sup>{{ field.help_text }}</sup>
-              {% endif %}
-              {{ field.errors }}
+              {% endif %}              
             </div><div class="col">
               {{ field }}
             </div>
           </div>
+          {% include 'messages.html' %}
         {% endfor %}
         <br>
         <div class="text-center">
-          <button type="submit"class="btn btn-info">Log In</button>
+          <button type="submit" class="btn btn-info">Log In</button>
         </div>                                           
       </form>           
     </div>           
